@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 id="typing"><center>kali linux</center></h1>
+    <p>Kali Linux is a special operating system used for cybersecurity and penetration testing. In this course, we will use Kali Linux to learn how Wi-Fi networks work and how security professionals test them. It contains many built-in tools that help analyze networks, detect vulnerabilities, and study wireless security. By using Kali Linux, students can understand how attackers try to break weak security systems. This knowledge helps learners protect networks and build stronger security. The goal of using Kali Linux in this course is educational—so students can learn ethical hacking and improve Wi-Fi security in a safe and legal way.
+    </p>
+    <h4>Step-1: Enter ifconfig</h4>
+    <p>ifconfig is used to view and manage network interfaces on a system. A network interface is the connection through which your computer communicates with a network, such as Ethernet or Wi-Fi.</p>
+    <h4>Step-2: Enter iwconfig</h4>
+    <p>iwconfig command is used to view and configure wireless network interfaces. It shows information about Wi-Fi adapters such as network name (SSID), signal strength, frequency, and mode.</p>
+    <h5>In Wi-Fi adapters, there are mainly two working modes used in networking and security learning.</h5>
+    <ol type="a">
+    <li>
+        <h5>Managed Mode</h5>
+        <p>In this mode, the Wi-Fi adapter connects to a wireless network like a normal user device. Your computer or phone joins a router and communicates through it to access the internet. This is the default mode used in everyday Wi-Fi connections.</p>
+    </li>
+
+    <li>
+        <h5>Monitor Mode</h5>
+        <p>In this mode, the Wi-Fi adapter can capture all wireless packets in the air without connecting to any specific network. Security researchers use this mode to analyze wireless traffic and study network behavior. It is commonly used in tools available in Kali Linux for wireless network analysis and security testing.</p>
+    </li>
+    </ol>
+    <h4>Step-3: Changing Managed Mode to Monitor Mode</h4>
+    <p>To analyze wireless networks, the Wi-Fi adapter must be switched from Managed Mode to Monitor Mode. In Managed Mode, the adapter connects to a router like a normal device. In Monitor Mode, the adapter can observe wireless traffic in the surrounding network.</p>
+    <p>In Kali Linux, this can be done using the Aircrack-ng tool.-- airmob-ng start wlan0 --</p>
+    <h5>Explanation</h5>
+    <ul>
+        <li><b>airmon-ng:</b> Tool used to manage wireless adapter modes.</li>
+        <li><b>start:</b> Command to enable monitor mode.</li>
+        <li><b>wlan0:</b> Name of the Wi-Fi interface.</li>
+    </ul>
+    <h4>Optional: Stop Interfering Processes (If Monitor Mode Does Not Work)</h4>
+    <p>When learning wireless analysis in Kali Linux, sometimes other system processes use the Wi-Fi adapter at the same time. Programs like network managers or background services may interfere with monitor mode. Because of this, the adapter may not switch properly or the monitoring tools may not work correctly.</p>
+    <p>To avoid this problem, those interfering processes can be stopped temporarily using a command from the Aircrack-ng toolkit.</p>
+    <p><center><b>airmon-ng check kill</b></center></p>
+    <h5>Explanation</h5>
+    <ul>
+        <li><b>airmon-ng:</b> Tool used to manage wireless adapter modes.</li>
+        <li><b>check:</b> Checks which processes are interfering with the Wi-Fi adapter.</li>
+        <li><b>kill:</b> Stops those processes temporarily so the adapter can work properly in monitor mode.</li>
+    </ul>
+        <h4>Step 4: Scan Active Wi-Fi Networks</h4>
+
+    <p>To see all active Wi-Fi hotspots around you, use the following command:
+    </p>
+
+    <p style="text-align:center;">
+    <code>airodump-ng wlan0</code>
+    </p>
+
+    <p>
+    The <b>airodump-ng</b> tool scans nearby wireless networks and displays
+    information such as the network name (SSID), channel, signal strength,
+    encryption type, and connected devices. This helps learners observe
+    available Wi-Fi networks and understand how wireless communication
+    appears during security analysis.
+    </p>
+    <h4>Important Fields in Airodump-ng Output</h4>
+
+<table align="center" border="1" cellpadding="8" cellspacing="0">
+<tr><th>Field</th>
+<th>Description</th>
+</tr>
+<tr><td><b>BSSID</b></td>
+<td>The unique MAC address of the Wi-Fi router or access point.</td>
+</tr>
+<tr><td><b>ESSID</b></td>
+<td>The name of the Wi-Fi network that users see when connecting.</td>
+</tr>
+<tr><td><b>PWR</b></td>
+<td>Shows the signal strength of the Wi-Fi network. A higher value means a stronger signal.</td>
+</tr>
+<tr><td><b>PSK</b></td>
+<td>Indicates the type of password security used, such as WPA or WPA2 Pre-Shared Key.</td>
+</tr>
+<tr><td><b>Channel</b></td>
+<td>The wireless channel number on which the Wi-Fi network is operating.</td>
+</tr>
+<tr><td><b>Station</b></td>
+<td>Shows the devices (clients) that are connected to the Wi-Fi network.</td>
+</tr>
+
+</table>
+<h4>Step 5: Target a Specific Wi-Fi Network</h4>
+
+<p>
+After scanning nearby networks, the next step is to monitor a specific hotspot
+using its BSSID (MAC address) and channel. This helps collect network data
+from the selected access point.
+</p>
+
+<h5>Command Syntax</h5>
+
+<p style="text-align:center;">
+<code>airodump-ng wlan0 --bssid &lt;MAC_Address&gt; --channel &lt;Channel_Number&gt; --write &lt;File_Name&gt;</code>
+</p>
+<h5>Example</h5>
+<p style="text-align:center;">
+<code>airodump-ng wlan0 --bssid 00:11:22:33:44:55 --channel 6 --write capture</code>
+</p>
+<h5>Explanation</h5>
+<ul>
+<li><b>airodump-ng</b> – Tool used to monitor and capture Wi-Fi network data.</li>
+<li><b>wlan0</b> – Name of the wireless interface.</li>
+<li><b>--bssid</b> – Specifies the MAC address of the target hotspot.</li>
+<li><b>--channel</b> – Defines the channel on which the hotspot is operating.</li>
+<li><b>--write</b> – Saves the captured data into a file for later analysis.</li>
+</ul>
+<h4>Step 6: Send Deauthentication and Capture Handshake</h4>
+<p>
+In this step, a deauthentication packet is sent to disconnect a device from the
+target Wi-Fi network. When the device reconnects, the authentication handshake
+can be captured and saved in the file created in the previous step.
+</p>
+
+<h5>Command Syntax</h5>
+<p style="text-align:center;">
+<code>aireplay-ng --deauth 100 -a &lt;Sender_MAC&gt; -c &lt;Target_MAC&gt; wlan0</code>
+</p>
+
+<h5>Example</h5>
+<p style="text-align:center;">
+<code>aireplay-ng --deauth 100 -a 00:11:22:33:44:55 -c AA:BB:CC:DD:EE:FF wlan0</code>
+</p>
+
+<h5>Explanation</h5>
+
+<ul>
+<li><b>aireplay-ng</b> – Tool used to send packets to a wireless network.</li>
+<li><b>--deauth 100</b> – Sends 100 deauthentication packets to disconnect the device.</li>
+<li><b>-a</b> – MAC address of the access point (router).</li>
+<li><b>-c</b> – MAC address of the connected client device.</li>
+<li><b>wlan0</b> – Name of the wireless interface.</li>
+</ul>
+
+<p>
+When the device reconnects to the router, the authentication handshake is
+captured automatically and saved in the file that was created in the previous
+step using the <b>--write filename</b> option.
+</p>
+<h4>Step-7: View the Captured Handshake File</h4>
+
+<p>
+After completing the previous steps, the captured network data and handshake
+information are saved in the file created using the <b>--write filename</b> option.
+This file can be opened and analyzed using different methods.
+</p>
+
+<ul>
+
+<li>
+<h5>Method 1: Using Wireshark</h5>
+<p>
+One way to read and analyze the captured file is by using the network analysis
+tool Wireshark. This tool allows students to open the capture file and observe
+wireless packets, authentication frames, and other network details.
+</p>
+</li>
+
+<li>
+<h5>Method 2: Using Thunar File Manager</h5>
+<p>
+Another simple way is by using the file manager available in Kali Linux called
+Thunar. Students can navigate to the folder where the capture file was saved
+and open it from there for further analysis.
+</p>
+</li>
+
+<li>
+<h5>Method 3: Security Analysis / Footprinting</h5>
+<p>
+The captured file can also be used for wireless security analysis. By studying
+the captured packets, learners can understand how devices communicate with a
+router, how authentication works, and how wireless security mechanisms operate.
+This process is often referred to as wireless footprinting or network analysis.
+</p>
+</li>
+
+</ul>
+
+<h4>Optional Step: Understanding WPA, WPA2 and WPA3 Security</h4>
+
+<p>
+During wireless network analysis, you may notice different types of
+encryption such as WPA, WPA2, or WPA3. These security standards
+protect Wi-Fi networks from unauthorized access.
+</p>
+<ul>
+<li><b>WPA (Wi-Fi Protected Access)</b>
+<p>
+WPA is an older wireless security standard. Because it is outdated,
+it has several weaknesses and is rarely used in modern networks.
+Cybersecurity researchers study it mainly for educational purposes.
+</p></li>
+
+<li><b>WPA2</b>
+<p>
+WPA2 provides stronger encryption using the Advanced Encryption
+Standard (AES). It protects communication between the router and
+connected devices and is still widely used in many networks.
+</p></li>
+
+<li><b>WPA3</b>
+WPA3 is the newest Wi-Fi security standard. It offers improved
+encryption, stronger authentication, and better protection against
+password-guessing attacks.
+</li>
+</ul>
+<h5>Important Note</h5>
+<p>
+Security tools available in systems like Kali Linux are designed for
+learning cybersecurity and performing authorized security testing.
+These tools help researchers understand wireless protocols and
+improve network protection. Unauthorized attempts to access someone
+else's Wi-Fi network are illegal.
+</p>
+<h4>Step 8: Understanding the Aircrack-ng Tool</h4>
+
+<p>
+Aircrack-ng is a well-known cybersecurity tool used in wireless security
+research. It analyzes captured wireless data files and is commonly used
+in laboratory environments to study how Wi-Fi authentication and
+encryption mechanisms work.
+</p>
+
+<h5>Basic Syntax</h5>
+
+<p style="text-align:center;">
+<code>aircrack-ng -w &lt;wordlist&gt; &lt;capture_file&gt;.cap</code>
+</p>
+
+<h5>Explanation of Syntax</h5>
+
+<ul>
+<li><b>aircrack-ng</b> – The main tool used for analyzing wireless capture files.</li>
+
+<li><b>-w &lt;wordlist&gt;</b> – Specifies the path of a dictionary file that contains
+many possible passwords used in security testing.</li>
+
+<li><b>&lt;capture_file&gt;.cap</b> – The packet capture file created during
+wireless network monitoring (usually generated by tools like
+airodump-ng).</li>
+</ul>
+
+<h5>Example Command</h5>
+
+<p style="text-align:center;">
+<code>aircrack-ng -w /path/to/wordlist.txt output-01.cap</code>
+</p>
+
+<h5>Using a Specific BSSID</h5>
+
+<p style="text-align:center;">
+<code>aircrack-ng -w wordlist.txt -b 00:11:22:33:44:55 output-01.cap</code>
+</p>
+
+<h5>Basic Help Command</h5>
+
+<p style="text-align:center;">
+<code>aircrack-ng</code>
+</p>
+
+<p>
+Running the tool without arguments displays help information,
+available options, and usage examples for cybersecurity learners.
+</p>
+
+<h5>Typical Wireless Security Learning Workflow</h5>
+
+<ul>
+<li><b>Monitor Mode</b> – Enable monitoring on the wireless adapter.</li>
+
+<li><b>Capture Data</b> – Observe wireless traffic and save it into a capture file.</li>
+
+<li><b>Analyze Capture</b> – Study the captured packets to understand
+authentication and encryption mechanisms.</li>
+</ul>
+
+<p>
+These tools are commonly used in cybersecurity training labs to help
+students understand how wireless security protocols operate and how
+networks can be configured more securely.
+</p>
+<h4>Step 9: Understanding Wordlist Creation and Linux Pipelines</h4>
+
+<p>
+In cybersecurity learning, sometimes large sets of possible passwords
+are generated for testing password strength in laboratory environments.
+One of the tools used in Kali Linux for this purpose is <b>crunch</b>.
+</p>
+
+<h5>1. Crunch Tool</h5>
+
+<p>
+<b>crunch</b> is a command-line tool used to generate wordlists.
+A wordlist is a file that contains many possible password combinations.
+These lists are often used in cybersecurity labs to test how strong
+a password is.
+</p>
+
+<h5>Basic Syntax</h5>
+
+<p style="text-align:center;">
+<code>crunch &lt;minimum_characters&gt; &lt;maximum_characters&gt; &lt;character_set&gt;</code>
+</p>
+
+<h5>Example</h5>
+
+<p style="text-align:center;">
+<code>crunch 4 6 abc123</code>
+</p>
+
+<p>
+This command generates all possible combinations using the characters
+<b>a, b, c, 1, 2, 3</b> with a minimum length of 4 and maximum length of 6.
+</p>
+
+<h5>Important Note</h5>
+
+<p>
+Wordlist generation can create millions of combinations. Because of this,
+it may consume large amounts of storage and system resources.
+In many situations, the command is stopped after a few seconds
+to avoid excessive disk usage.
+</p>
+
+<h5>2. Linux Pipeline (|)</h5>
+
+<p>
+Linux provides a powerful feature called a <b>pipeline</b>. The pipeline
+operator <b>|</b> is used to send the output of one command directly
+to another command.
+</p>
+
+<h5>Pipeline Syntax</h5>
+
+<p style="text-align:center;">
+<code>command1 | command2 | command3</code>
+</p>
+
+<p>
+The output of the first command becomes the input of the second command,
+and the process continues from left to right.
+</p>
+
+<h5>Purpose of Pipelines</h5>
+
+<ul>
+<li>Combine multiple tools together.</li>
+<li>Filter or search specific information.</li>
+<li>Process large data streams efficiently.</li>
+<li>Avoid creating unnecessary temporary files.</li>
+</ul>
+
+<h5>Common Tools Used with Pipelines</h5>
+
+<ul>
+<li><b>grep</b> – Search for specific text in output.</li>
+<li><b>sort</b> – Arrange data in alphabetical or numerical order.</li>
+<li><b>less</b> – View long output page by page.</li>
+<li><b>wc</b> – Count lines, words, or characters.</li>
+<li><b>cut</b> – Extract specific parts of text.</li>
+</ul>
+
+<h5>Examples of Pipelines</h5>
+
+<p><b>Searching for a running process</b></p>
+
+<p style="text-align:center;">
+<code>ps -ef | grep "service_name"</code>
+</p>
+
+<p><b>Counting files in a directory</b></p>
+
+<p style="text-align:center;">
+<code>ls | wc -l</code>
+</p>
+
+<p><b>Filtering network configuration information</b></p>
+
+<p style="text-align:center;">
+<code>ifconfig | grep "inet"</code>
+</p>
+
+<h5>Types of Pipes</h5>
+
+<ul>
+<li>
+<b>Unnamed Pipes (Anonymous Pipes)</b> – Used for immediate communication
+between commands in a single command line.
+</li>
+
+<li>
+<b>Named Pipes (FIFO)</b> – Used when two different processes need to
+communicate through a temporary file-like channel.
+</li>
+
+</ul>
+
+<h5>Key Concept</h5>
+
+<p>
+Pipelines are extremely powerful in Linux because they allow multiple
+commands to work together as a chain. Instead of saving data into files
+and processing them separately, pipelines process data instantly and
+efficiently.
+</p>
+
+</body>
+<canvas id="matrix"></canvas>
+
+<script>
+
+let canvas = document.getElementById("matrix");
+let ctx = canvas.getContext("2d");
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+let letters = "01";
+letters = letters.split("");
+
+let fontSize = 14;
+let columns = canvas.width/fontSize;
+
+let drops = [];
+for(let x=0;x<columns;x++)
+drops[x]=1;
+
+function draw(){
+ctx.fillStyle="rgba(0,0,0,0.05)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="#00ff9c";
+ctx.font=fontSize+"px monospace";
+
+for(let i=0;i<drops.length;i++){
+let text=letters[Math.floor(Math.random()*letters.length)];
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
+drops[i]=0;
+
+drops[i]++;
+}
+}
+
+setInterval(draw,33);
+
+</script>
+<footer>
+    <center>
+    <a href="index.html">home</a>
+    <a href="unit1.html">1</a>
+    <a href="unit2.html">2</a>
+    <a href="unit3.html">3</a>
+    <a href="unit4.html">4</a>
+    <a href="unit5.html">5</a>
+    </center>
+</footer>
+</html>
